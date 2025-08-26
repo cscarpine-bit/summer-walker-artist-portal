@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/supabase_config.dart';
 
 class AuthService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -23,21 +24,30 @@ class AuthService {
           'full_name': fullName,
           'created_at': DateTime.now().toIso8601String(),
         },
+        emailRedirectTo: SupabaseConfig.redirectUrl,
       );
-
+      
       // Create user profile in profiles table
       if (response.user != null) {
-        await _supabase.from('profiles').insert({
-          'id': response.user!.id,
-          'full_name': fullName,
-          'email': email,
-          'created_at': DateTime.now().toIso8601String(),
-          'updated_at': DateTime.now().toIso8601String(),
-        });
+        try {
+          await _supabase.from('profiles').insert({
+            'id': response.user!.id,
+            'full_name': fullName,
+            'email': email,
+            'created_at': DateTime.now().toIso8601String(),
+            'updated_at': DateTime.now().toIso8601String(),
+          });
+        } catch (e) {
+          // Profile creation failed, but user was created
+          print('Profile creation failed: $e');
+        }
       }
-
+      
       return response;
     } catch (e) {
+      if (e.toString().contains('over_email_send_rate_limit')) {
+        throw Exception('Please wait a moment before trying again. Check your email for verification.');
+      }
       throw Exception('Sign up failed: $e');
     }
   }
@@ -53,6 +63,9 @@ class AuthService {
         password: password,
       );
     } catch (e) {
+      if (e.toString().contains('Email not confirmed')) {
+        throw Exception('Please check your email and click the verification link before signing in.');
+      }
       throw Exception('Sign in failed: $e');
     }
   }
@@ -69,7 +82,10 @@ class AuthService {
   // Reset password
   Future<void> resetPassword(String email) async {
     try {
-      await _supabase.auth.resetPasswordForEmail(email);
+      await _supabase.auth.resetPasswordForEmail(
+        email,
+        redirectTo: SupabaseConfig.redirectUrl,
+      );
     } catch (e) {
       throw Exception('Password reset failed: $e');
     }
@@ -97,16 +113,35 @@ class AuthService {
   Future<Map<String, dynamic>?> getUserProfile() async {
     try {
       if (currentUser == null) return null;
-
+      
       final response = await _supabase
           .from('profiles')
           .select()
           .eq('id', currentUser!.id)
           .single();
-
+      
       return response;
     } catch (e) {
       throw Exception('Failed to get user profile: $e');
+    }
+  }
+
+  // Check if user needs email verification
+  bool get needsEmailVerification {
+    final user = currentUser;
+    return user != null && user.emailConfirmedAt == null;
+  }
+
+  // Resend verification email
+  Future<void> resendVerificationEmail() async {
+    try {
+      await _supabase.auth.resend(
+        type: OtpType.signup,
+        email: currentUser?.email ?? '',
+        emailRedirectTo: SupabaseConfig.redirectUrl,
+      );
+    } catch (e) {
+      throw Exception('Failed to resend verification email: $e');
     }
   }
 

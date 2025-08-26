@@ -16,10 +16,11 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _fullNameController = TextEditingController();
-
+  
   bool _isLogin = true;
   bool _isLoading = false;
   bool _obscurePassword = true;
+  String? _lastSignupEmail;
 
   @override
   void dispose() {
@@ -36,14 +37,14 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final authService = context.read<AuthService>();
-
+      
       if (_isLogin) {
         // Sign in
         await authService.signIn(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
-
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -54,28 +55,38 @@ class _LoginPageState extends State<LoginPage> {
         }
       } else {
         // Sign up
+        final email = _emailController.text.trim();
+        _lastSignupEmail = email;
+        
         await authService.signUp(
-          email: _emailController.text.trim(),
+          email: email,
           password: _passwordController.text,
           fullName: _fullNameController.text.trim(),
         );
-
+        
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                  'Account created successfully! Please check your email to verify your account.'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          // Show success message with email verification info
+          _showEmailVerificationDialog(email);
         }
       }
     } catch (e) {
       if (mounted) {
+        String message = e.toString();
+        
+        // Handle specific error cases
+        if (message.contains('over_email_send_rate_limit')) {
+          message = 'Please wait a moment before trying again. Check your email for verification.';
+        } else if (message.contains('Email not confirmed')) {
+          message = 'Please check your email and click the verification link before signing in.';
+        } else if (message.contains('Invalid login credentials')) {
+          message = 'Invalid email or password. Please try again.';
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text(message),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -84,6 +95,51 @@ class _LoginPageState extends State<LoginPage> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _showEmailVerificationDialog(String email) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('🎉 Account Created!'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Your account has been created successfully!'),
+            const SizedBox(height: 16),
+            Text(
+              'We\'ve sent a verification email to:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(email, style: TextStyle(color: AppTheme.primaryColor)),
+            const SizedBox(height: 16),
+            const Text(
+              'Please check your email and click the verification link to activate your account.',
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'After verification, you can sign in with your email and password.',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // Switch to login mode
+              setState(() {
+                _isLogin = true;
+                _formKey.currentState?.reset();
+              });
+            },
+            child: const Text('Got it!'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _toggleMode() {
@@ -146,9 +202,9 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-
+                    
                     const SizedBox(height: 40),
-
+                    
                     // Form
                     Container(
                       padding: const EdgeInsets.all(24),
@@ -201,7 +257,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               const SizedBox(height: 16),
                             ],
-
+                            
                             // Email Field
                             TextFormField(
                               controller: _emailController,
@@ -240,9 +296,9 @@ class _LoginPageState extends State<LoginPage> {
                                 return null;
                               },
                             ),
-
+                            
                             const SizedBox(height: 16),
-
+                            
                             // Password Field
                             TextFormField(
                               controller: _passwordController,
@@ -293,9 +349,9 @@ class _LoginPageState extends State<LoginPage> {
                                 return null;
                               },
                             ),
-
+                            
                             const SizedBox(height: 24),
-
+                            
                             // Submit Button
                             ElevatedButton(
                               onPressed: _isLoading ? null : _submitForm,
@@ -327,9 +383,9 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                             ),
-
+                            
                             const SizedBox(height: 16),
-
+                            
                             // Toggle Mode Button
                             TextButton(
                               onPressed: _toggleMode,
@@ -342,7 +398,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-
+                            
                             if (_isLogin) ...[
                               const SizedBox(height: 8),
                               TextButton(
@@ -350,8 +406,7 @@ class _LoginPageState extends State<LoginPage> {
                                   // TODO: Implement password reset
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                          'Password reset feature coming soon!'),
+                                      content: Text('Password reset feature coming soon!'),
                                     ),
                                   );
                                 },

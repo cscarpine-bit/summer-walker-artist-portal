@@ -52,15 +52,190 @@ class AuthWrapper extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SplashScreen();
         }
-
+        
         final authState = snapshot.data;
-        if (authState?.event == AuthChangeEvent.signedIn &&
-            authState?.session != null) {
-          return const MainScreen();
+        final user = authState?.session?.user;
+        
+        if (user != null) {
+          // User is signed in
+          if (user.emailConfirmedAt != null) {
+            // Email is confirmed, show main app
+            return const MainScreen();
+          } else {
+            // Email not confirmed, show verification message
+            return const EmailVerificationScreen();
+          }
         }
-
+        
+        // No user, show login
         return const LoginPage();
       },
+    );
+  }
+}
+
+class EmailVerificationScreen extends StatelessWidget {
+  const EmailVerificationScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppTheme.backgroundColor,
+              AppTheme.primaryColor.withOpacity(0.3),
+              AppTheme.backgroundColor,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Email verification icon
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.email_outlined,
+                      size: 60,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 40),
+                  
+                  const Text(
+                    'Check Your Email',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryTextColor,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  Text(
+                    'We\'ve sent a verification link to:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppTheme.secondaryTextColor,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 8),
+                  
+                  Text(
+                    context.read<AuthService>().currentUser?.email ?? '',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const Text(
+                          '📧 Click the verification link in your email',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'After verification, you\'ll be automatically signed in',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          try {
+                            await context.read<AuthService>().resendVerificationEmail();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Verification email resent!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Failed to resend: ${e.toString()}'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Resend Email'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.secondaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        ),
+                      ),
+                      
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          await context.read<AuthService>().signOut();
+                        },
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Sign Out'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.withOpacity(0.8),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
