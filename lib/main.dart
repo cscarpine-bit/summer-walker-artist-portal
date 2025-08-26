@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 end: Alignment.bottomCenter,
                 colors: [
                   AppTheme.backgroundColor,
-                  AppTheme.primaryColor.withValues(alpha: 0.3),
+                  AppTheme.primaryColor.withOpacity(0.3),
                   AppTheme.backgroundColor,
                 ],
               ),
@@ -79,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                        color: AppTheme.primaryColor.withOpacity(0.3),
                         blurRadius: 30,
                         spreadRadius: 5,
                       ),
@@ -206,7 +206,7 @@ class HomeScreen extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppTheme.primaryColor.withValues(alpha: 0.2),
+                      AppTheme.primaryColor.withOpacity(0.1),
                       AppTheme.backgroundColor,
                     ],
                   ),
@@ -231,7 +231,7 @@ class HomeScreen extends StatelessWidget {
                             boxShadow: [
                               BoxShadow(
                                 color: AppTheme.primaryColor
-                                    .withValues(alpha: 0.3),
+                                    .withOpacity(0.1),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),
@@ -304,13 +304,13 @@ class HomeScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppTheme.primaryColor.withValues(alpha: 0.1),
-                          AppTheme.secondaryColor.withValues(alpha: 0.1),
+                          AppTheme.primaryColor.withOpacity(0.1),
+                          AppTheme.secondaryColor.withOpacity(0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                        color: AppTheme.primaryColor.withOpacity(0.1),
                       ),
                     ),
                     child: Column(
@@ -388,7 +388,7 @@ class HomeScreen extends StatelessWidget {
                         subtitle: 'Stream to fans',
                         gradient: [
                           AppTheme.primaryColor,
-                          AppTheme.primaryColor.withValues(alpha: 0.7)
+                          AppTheme.primaryColor.withOpacity(0.1)
                         ],
                         onTap: () {},
                       ),
@@ -398,7 +398,7 @@ class HomeScreen extends StatelessWidget {
                         subtitle: 'Share moments',
                         gradient: [
                           AppTheme.secondaryColor,
-                          AppTheme.secondaryColor.withValues(alpha: 0.7)
+                          AppTheme.secondaryColor.withOpacity(0.1)
                         ],
                         onTap: () {},
                       ),
@@ -408,7 +408,7 @@ class HomeScreen extends StatelessWidget {
                         subtitle: 'Share music',
                         gradient: [
                           Colors.purple,
-                          Colors.purple.withValues(alpha: 0.7)
+                          Colors.purple.withOpacity(0.1)
                         ],
                         onTap: () {},
                       ),
@@ -418,7 +418,7 @@ class HomeScreen extends StatelessWidget {
                         subtitle: 'Quick update',
                         gradient: [
                           Colors.orange,
-                          Colors.orange.withValues(alpha: 0.7)
+                          Colors.orange.withOpacity(0.1)
                         ],
                         onTap: () {},
                       ),
@@ -428,7 +428,7 @@ class HomeScreen extends StatelessWidget {
                         subtitle: 'Exclusive content',
                         gradient: [
                           Colors.amber,
-                          Colors.orange.withValues(alpha: 0.7)
+                          Colors.orange.withOpacity(0.1)
                         ],
                         onTap: () {
                           Navigator.of(context).push(
@@ -510,7 +510,7 @@ class _LiveStatItem extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 24),
@@ -564,7 +564,7 @@ class _ActionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: gradient[0].withValues(alpha: 0.3),
+              color: gradient[0].withOpacity(0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -586,7 +586,7 @@ class _ActionCard extends StatelessWidget {
             Text(
               subtitle,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.8),
+                color: Colors.white.withOpacity(0.1),
                 fontSize: 12,
               ),
             ),
@@ -619,7 +619,7 @@ class _RecentActivityItem extends StatelessWidget {
         color: AppTheme.surfaceColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.primaryColor.withValues(alpha: 0.1),
+          color: AppTheme.primaryColor.withOpacity(0.1),
         ),
       ),
       child: Row(
@@ -627,7 +627,7 @@ class _RecentActivityItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -698,7 +698,7 @@ class LiveScreen extends StatelessWidget {
                   color: AppTheme.surfaceColor,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                    color: AppTheme.primaryColor.withOpacity(0.1),
                     width: 2,
                   ),
                 ),
@@ -895,13 +895,13 @@ class ProfileScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppTheme.primaryColor.withValues(alpha: 0.1),
-                    AppTheme.secondaryColor.withValues(alpha: 0.1),
+                    AppTheme.primaryColor.withOpacity(0.1),
+                    AppTheme.secondaryColor.withOpacity(0.1),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                  color: AppTheme.primaryColor.withOpacity(0.1),
                 ),
               ),
               child: Row(
@@ -1099,7 +1099,7 @@ class _ProfileOption extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                    color: AppTheme.primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: AppTheme.primaryColor, size: 20),

@@ -37,7 +37,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               color: AppTheme.surfaceColor,
               border: Border(
                 right: BorderSide(
-                  color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                  color: AppTheme.primaryColor.withOpacity(0.1),
                 ),
               ),
             ),
@@ -350,7 +350,7 @@ class _AddSongTab extends StatelessWidget {
                       color: AppTheme.surfaceColor,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                        color: AppTheme.primaryColor.withOpacity(0.1),
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -478,7 +478,7 @@ class _AddVideoTab extends StatelessWidget {
                       color: AppTheme.surfaceColor,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                        color: AppTheme.primaryColor.withOpacity(0.1),
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -601,7 +601,7 @@ class _AddPhotoTab extends StatelessWidget {
                       color: AppTheme.surfaceColor,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                        color: AppTheme.primaryColor.withOpacity(0.1),
                         style: BorderStyle.solid,
                       ),
                     ),
@@ -844,7 +844,7 @@ class _StatCard extends StatelessWidget {
         color: AppTheme.surfaceColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-                      color: color.withValues(alpha: 0.2),
+                      color: color.withOpacity(0.1),
         ),
       ),
       child: Column(
@@ -895,7 +895,7 @@ class _ActivityItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withValues(alpha: 0.1),
+              color: AppTheme.primaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: AppTheme.primaryColor, size: 20),
@@ -970,7 +970,7 @@ class _FormField extends StatelessWidget {
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppTheme.primaryColor.withValues(alpha: 0.2)),
+                borderSide: BorderSide(color: AppTheme.primaryColor.withOpacity(0.1)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -1010,7 +1010,7 @@ class _PremiumContentItem extends StatelessWidget {
         color: AppTheme.surfaceColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                      color: AppTheme.primaryColor.withOpacity(0.1),
         ),
       ),
       child: Row(

@@ -128,13 +128,7 @@ class AppTheme {
         ),
       ),
       
-      cardTheme: CardThemeData(
-        color: surfaceColor,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        ),
-      ),
+
       
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: surfaceColor,

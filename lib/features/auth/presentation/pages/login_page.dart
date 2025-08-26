@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.6),
+                color: Colors.black.withOpacity(0.1),
               ),
             ),
           ),
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                           'and release this',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.7),
+                            color: Colors.white.withOpacity(0.1),
                             fontStyle: FontStyle.italic,
                             letterSpacing: 1,
                           ),
@@ -86,10 +86,10 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.1),
+                      color: Colors.white.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: Colors.white.withOpacity(0.1),
                       ),
                     ),
                     child: Form(
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                           Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.1),
+                              color: Colors.white.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                                         'Login',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: _isLogin ? Colors.white : Colors.white.withValues(alpha: 0.8),
+                                          color: _isLogin ? Colors.white : Colors.white.withOpacity(0.1),
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                                         'Sign Up',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: !_isLogin ? Colors.white : Colors.white.withValues(alpha: 0.8),
+                                          color: !_isLogin ? Colors.white : Colors.white.withOpacity(0.1),
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -162,17 +162,17 @@ class _LoginPageState extends State<LoginPage> {
                               style: const TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 hintText: 'Full Name',
-                                hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-                                prefixIcon: Icon(Icons.person, color: Colors.white.withValues(alpha: 0.6)),
+                                hintStyle: TextStyle(color: Colors.white.withOpacity(0.1)),
+                                prefixIcon: Icon(Icons.person, color: Colors.white.withOpacity(0.1)),
                                 filled: true,
-                                fillColor: Colors.white.withValues(alpha: 0.1),
+                                fillColor: Colors.white.withOpacity(0.1),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide.none,
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                                  borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -189,17 +189,17 @@ class _LoginPageState extends State<LoginPage> {
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               hintText: 'Email',
-                              hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-                              prefixIcon: Icon(Icons.email, color: Colors.white.withValues(alpha: 0.6)),
+                              hintStyle: TextStyle(color: Colors.white.withOpacity(0.1)),
+                              prefixIcon: Icon(Icons.email, color: Colors.white.withOpacity(0.1)),
                               filled: true,
-                              fillColor: Colors.white.withValues(alpha: 0.1),
+                              fillColor: Colors.white.withOpacity(0.1),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide.none,
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                                borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -217,17 +217,17 @@ class _LoginPageState extends State<LoginPage> {
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               hintText: 'Password',
-                              hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-                              prefixIcon: Icon(Icons.lock, color: Colors.white.withValues(alpha: 0.6)),
+                              hintStyle: TextStyle(color: Colors.white.withOpacity(0.1)),
+                              prefixIcon: Icon(Icons.lock, color: Colors.white.withOpacity(0.1)),
                               filled: true,
-                              fillColor: Colors.white.withValues(alpha: 0.1),
+                              fillColor: Colors.white.withOpacity(0.1),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide.none,
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                                borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -271,7 +271,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: Text(
                                 'Forgot Password?',
                                 style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.8),
+                                  color: Colors.white.withOpacity(0.1),
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -288,7 +288,7 @@ class _LoginPageState extends State<LoginPage> {
                     'By continuing, you agree to our Terms of Service and Privacy Policy',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.6),
+                      color: Colors.white.withOpacity(0.1),
                       fontSize: 12,
                     ),
                   ),
