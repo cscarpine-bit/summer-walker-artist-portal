@@ -31,30 +31,140 @@
 
   <title>summer_walker_app</title>
   <link rel="manifest" href="manifest.json">
+  
+  <style>
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #8B4B9C, #E8B4D9);
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    .loading-spinner {
+      border: 4px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 4px solid white;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-container {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: 5px;
+      margin: 20px;
+    }
+  </style>
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div id="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <h1>Summer Walker Artist Portal</h1>
+    <p>Loading your app...</p>
+    <div id="status">Initializing...</div>
+  </div>
+  
+  <!-- Error Container -->
+  <div id="error" class="error-container">
+    <h3>App Loading Error</h3>
+    <p id="error-message">Something went wrong while loading the app.</p>
+    <button onclick="location.reload()">Reload Page</button>
+  </div>
+
   <script>
-    // Configure Flutter web renderer
-    window.flutterConfiguration = {
-      canvasKitBaseUrl: "/summer-walker-artist-portal/canvaskit/"
-    };
+    // Debug logging
+    console.log('Page loading started...');
+    console.log('Base href:', document.querySelector('base').href);
+    console.log('Current URL:', window.location.href);
     
-    // Error handling for Flutter web
-    window.addEventListener('error', function(e) {
-      console.error('Flutter web error:', e);
-      document.body.innerHTML = '<div style="padding: 20px; text-align: center;"><h2>Loading Summer Walker Artist Portal...</h2><p>If this page doesn\'t load, please check the console for errors.</p></div>';
-    });
+    // Status updates
+    function updateStatus(message) {
+      document.getElementById('status').textContent = message;
+      console.log('Status:', message);
+    }
     
-    // Check if Flutter is loading
-    window.addEventListener('load', function() {
-      console.log('Page loaded, checking Flutter...');
-      setTimeout(function() {
-        if (!window.flutter_inappwebview) {
-          console.log('Flutter web should be loading...');
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
+      console.error('Error:', message);
+    }
+    
+    // Check if Flutter files exist
+    function checkFlutterFiles() {
+      updateStatus('Checking Flutter files...');
+      
+      const requiredFiles = [
+        'flutter_bootstrap.js',
+        'main.dart.js',
+        'flutter.js'
+      ];
+      
+      let missingFiles = [];
+      
+      requiredFiles.forEach(file => {
+        const script = document.createElement('script');
+        script.src = file;
+        script.onerror = () => {
+          missingFiles.push(file);
+          console.error('Failed to load:', file);
+        };
+        script.onload = () => {
+          console.log('Successfully loaded:', file);
+        };
+        document.head.appendChild(script);
+      });
+      
+      setTimeout(() => {
+        if (missingFiles.length > 0) {
+          showError(`Missing Flutter files: ${missingFiles.join(', ')}. Check if the build completed successfully.`);
+        } else {
+          updateStatus('Flutter files loaded, initializing app...');
         }
-      }, 1000);
+      }, 2000);
+    }
+    
+    // Error handling
+    window.addEventListener('error', function(e) {
+      console.error('Global error:', e);
+      showError(`JavaScript error: ${e.message}`);
     });
+    
+    // Page load handling
+    window.addEventListener('load', function() {
+      updateStatus('Page loaded, checking Flutter...');
+      checkFlutterFiles();
+      
+      // Timeout for Flutter initialization
+      setTimeout(() => {
+        if (!window.flutter_inappwebview && !document.querySelector('flutter-app')) {
+          updateStatus('Flutter not initialized, checking for issues...');
+          setTimeout(() => {
+            showError('Flutter app failed to initialize. Check console for errors.');
+          }, 3000);
+        }
+      }, 5000);
+    });
+    
+    // Check for Flutter bootstrap
+    if (typeof Flutter === 'undefined') {
+      updateStatus('Flutter not detected, loading bootstrap...');
+    }
   </script>
-  <script src="flutter_bootstrap.js" async></script>
+  
+  <script src="flutter_bootstrap.js" async onerror="showError('Failed to load Flutter bootstrap')"></script>
 </body>
 </html>
