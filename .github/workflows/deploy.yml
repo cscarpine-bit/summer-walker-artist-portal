@@ -37,9 +37,44 @@ jobs:
       - name: Build web
         run: flutter build web --release --base-href /summer-walker-artist-portal/ --web-renderer html
       
+      - name: Verify build files
+        run: |
+          echo "🔍 Checking build output..."
+          ls -la build/web/
+          echo "📁 Checking critical files..."
+          if [ -f "build/web/flutter_bootstrap.js" ]; then
+            echo "✅ flutter_bootstrap.js exists"
+          else
+            echo "❌ flutter_bootstrap.js missing!"
+            exit 1
+          fi
+          if [ -f "build/web/main.dart.js" ]; then
+            echo "✅ main.dart.js exists"
+          else
+            echo "❌ main.dart.js missing!"
+            exit 1
+          fi
+          if [ -f "build/web/flutter.js" ]; then
+            echo "✅ flutter.js exists"
+          else
+            echo "❌ flutter.js missing!"
+            exit 1
+          fi
+          echo "🎉 All critical files present!"
+      
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
           force_orphan: true
+      
+      - name: Verify deployment
+        run: |
+          echo "🌐 Waiting for deployment to complete..."
+          sleep 30
+          echo "🔍 Checking deployed files..."
+          curl -f "https://cscarpine-bit.github.io/summer-walker-artist-portal/flutter_bootstrap.js" || echo "❌ flutter_bootstrap.js not accessible"
+          curl -f "https://cscarpine-bit.github.io/summer-walker-artist-portal/main.dart.js" || echo "❌ main.dart.js not accessible"
+          curl -f "https://cscarpine-bit.github.io/summer-walker-artist-portal/flutter.js" || echo "❌ flutter.js not accessible"
+          echo "🎯 Deployment verification complete!"
