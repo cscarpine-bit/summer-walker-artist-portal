@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
 import 'core/themes/app_theme.dart';
+import 'core/config/supabase_config.dart';
+import 'core/services/auth_service.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/content/presentation/pages/premium_content_page.dart';
 import 'features/admin/presentation/pages/admin_dashboard_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: SupabaseConfig.supabaseUrl,
+    anonKey: SupabaseConfig.supabaseAnonKey,
+  );
+
   runApp(const SummerWalkerApp());
 }
 
@@ -13,11 +25,42 @@ class SummerWalkerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Summer Walker',
-      theme: AppTheme.lightTheme,
-      home: const SplashScreen(),
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        Provider<AuthService>(
+          create: (_) => AuthService(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Summer Walker',
+        theme: AppTheme.lightTheme,
+        home: const AuthWrapper(),
+        debugShowCheckedModeBanner: false,
+      ),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<AuthState>(
+      stream: context.read<AuthService>().authStateChanges,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SplashScreen();
+        }
+
+        final authState = snapshot.data;
+        if (authState?.event == AuthChangeEvent.signedIn &&
+            authState?.session != null) {
+          return const MainScreen();
+        }
+
+        return const LoginPage();
+      },
     );
   }
 }
@@ -35,9 +78,11 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     final navigator = Navigator.of(context);
     Future.delayed(const Duration(seconds: 2), () {
-      navigator.pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
+      if (mounted) {
+        navigator.pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      }
     });
   }
 
@@ -230,8 +275,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppTheme.primaryColor
-                                    .withOpacity(0.1),
+                                color: AppTheme.primaryColor.withOpacity(0.1),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),
@@ -741,7 +785,8 @@ class LiveScreen extends StatelessWidget {
                     style: const TextStyle(color: AppTheme.primaryTextColor),
                     decoration: InputDecoration(
                       hintText: 'Stream title...',
-                      hintStyle: const TextStyle(color: AppTheme.secondaryTextColor),
+                      hintStyle:
+                          const TextStyle(color: AppTheme.secondaryTextColor),
                       prefixIcon:
                           const Icon(Icons.title, color: AppTheme.primaryColor),
                       filled: true,
@@ -772,8 +817,8 @@ class LiveScreen extends StatelessWidget {
                               const SizedBox(width: 8),
                               Text(
                                 '0 viewers',
-                                style:
-                                    const TextStyle(color: AppTheme.primaryTextColor),
+                                style: const TextStyle(
+                                    color: AppTheme.primaryTextColor),
                               ),
                             ],
                           ),
@@ -794,8 +839,8 @@ class LiveScreen extends StatelessWidget {
                               const SizedBox(width: 8),
                               Text(
                                 '00:00',
-                                style:
-                                    const TextStyle(color: AppTheme.primaryTextColor),
+                                style: const TextStyle(
+                                    color: AppTheme.primaryTextColor),
                               ),
                             ],
                           ),
