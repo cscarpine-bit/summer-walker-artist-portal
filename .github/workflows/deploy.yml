@@ -25,17 +25,26 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.35.1'
           channel: 'stable'
       
       - name: Enable web
         run: flutter config --enable-web
       
+      - name: Flutter doctor
+        run: flutter doctor -v
+      
       - name: Get dependencies
         run: flutter pub get
       
-      - name: Build web
-        run: flutter build web --release --base-href /summer-walker-artist-portal/ --web-renderer html
+      - name: Clean build
+        run: flutter clean
+      
+      - name: Build web with verbose output
+        run: |
+          echo "🔍 Building Flutter web app..."
+          flutter build web --release --base-href /summer-walker-artist-portal/ --verbose
+          echo "🎉 Build completed!"
       
       - name: Verify build files
         run: |
@@ -44,8 +53,13 @@ jobs:
           echo "📁 Checking critical files..."
           if [ -f "build/web/flutter_bootstrap.js" ]; then
             echo "✅ flutter_bootstrap.js exists"
+            ls -la "build/web/flutter_bootstrap.js"
           else
             echo "❌ flutter_bootstrap.js missing!"
+            echo "🔍 Looking for similar files..."
+            find build/web/ -name "*bootstrap*" -o -name "*flutter*" | head -10
+            echo "🔍 Checking if this is a Flutter version issue..."
+            flutter --version
             exit 1
           fi
           if [ -f "build/web/main.dart.js" ]; then
