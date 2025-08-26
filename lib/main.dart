@@ -5,6 +5,7 @@ import 'core/themes/app_theme.dart';
 import 'core/config/supabase_config.dart';
 import 'core/services/auth_service.dart';
 import 'features/auth/presentation/pages/login_page.dart';
+import 'features/auth/presentation/pages/test_auth_page.dart';
 import 'features/content/presentation/pages/premium_content_page.dart';
 import 'features/admin/presentation/pages/admin_dashboard_page.dart';
 
