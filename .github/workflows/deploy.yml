@@ -35,7 +35,7 @@ jobs:
         run: flutter pub get
       
       - name: Build web
-        run: flutter build web --release --base-href /summer-walker-artist-portal/
+        run: flutter build web --release --base-href /summer-walker-artist-portal/ --web-renderer html
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

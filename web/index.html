@@ -14,7 +14,7 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF">
+  <base href="/summer-walker-artist-portal/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -33,6 +33,28 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script>
+    // Configure Flutter web renderer
+    window.flutterConfiguration = {
+      canvasKitBaseUrl: "/summer-walker-artist-portal/canvaskit/"
+    };
+    
+    // Error handling for Flutter web
+    window.addEventListener('error', function(e) {
+      console.error('Flutter web error:', e);
+      document.body.innerHTML = '<div style="padding: 20px; text-align: center;"><h2>Loading Summer Walker Artist Portal...</h2><p>If this page doesn\'t load, please check the console for errors.</p></div>';
+    });
+    
+    // Check if Flutter is loading
+    window.addEventListener('load', function() {
+      console.log('Page loaded, checking Flutter...');
+      setTimeout(function() {
+        if (!window.flutter_inappwebview) {
+          console.log('Flutter web should be loading...');
+        }
+      }, 1000);
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
