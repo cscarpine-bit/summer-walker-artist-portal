@@ -40,12 +40,19 @@ class AuthService {
             'full_name': fullName,
             'username': username,
             'email': email,
+            'bio': null,
+            'avatar_url': null,
+            'is_artist': false,
+            'artist_verified': false,
+            'social_links': '{}',
             'created_at': DateTime.now().toIso8601String(),
             'updated_at': DateTime.now().toIso8601String(),
           });
+          print('✅ Profile created successfully for new user: ${response.user!.id}');
         } catch (e) {
           // Profile creation failed, but user was created
-          print('Profile creation failed: $e');
+          print('❌ Profile creation failed: $e');
+          // Try to create profile later when they first access it
         }
       }
 
@@ -72,6 +79,12 @@ class AuthService {
 
       // Force a refresh of the auth state
       await _supabase.auth.refreshSession();
+
+      // Ensure profile exists after successful sign in
+      if (response.user != null) {
+        // This will create a profile if it doesn't exist
+        await _ensureProfileExists();
+      }
 
       return response;
     } catch (e) {
@@ -131,15 +144,64 @@ class AuthService {
     try {
       if (currentUser == null) return null;
 
-      final response = await _supabase
-          .from('profiles')
-          .select()
-          .eq('id', currentUser!.id)
-          .single();
-
-      return response;
+      // First, try to get the existing profile
+      try {
+        final response = await _supabase
+            .from('profiles')
+            .select()
+            .eq('id', currentUser!.id)
+            .single();
+        return response;
+      } catch (e) {
+        // Profile doesn't exist, create one automatically
+        print('Profile not found, creating one automatically for user: ${currentUser!.id}');
+        await _ensureProfileExists();
+        
+        // Now try to get the profile again
+        final response = await _supabase
+            .from('profiles')
+            .select()
+            .eq('id', currentUser!.id)
+            .single();
+        return response;
+      }
     } catch (e) {
       throw Exception('Failed to get user profile: $e');
+    }
+  }
+
+  // Ensure user profile exists, create if missing
+  Future<void> _ensureProfileExists() async {
+    try {
+      if (currentUser == null) return;
+
+      // Check if profile already exists
+      final existingProfile = await _supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', currentUser!.id)
+          .maybeSingle();
+
+      if (existingProfile == null) {
+        // Create profile with default values
+        await _supabase.from('profiles').insert({
+          'id': currentUser!.id,
+          'full_name': currentUser!.userMetadata?['full_name'] ?? currentUser!.email?.split('@')[0] ?? 'User',
+          'email': currentUser!.email ?? '',
+          'username': currentUser!.userMetadata?['username'] ?? currentUser!.email?.split('@')[0] ?? 'user',
+          'bio': null,
+          'avatar_url': null,
+          'is_artist': false,
+          'artist_verified': false,
+          'social_links': '{}',
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+        print('✅ Created missing profile for user: ${currentUser!.id}');
+      }
+    } catch (e) {
+      print('❌ Failed to ensure profile exists: $e');
+      // Don't throw here, just log the error
     }
   }
 
