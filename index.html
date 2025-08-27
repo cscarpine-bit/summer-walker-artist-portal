@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/summer-walker-artist-portal/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="summer_walker_app">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>summer_walker_app</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <style>
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #8B4B9C, #E8B4D9);
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    .loading-spinner {
+      border: 4px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 4px solid white;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-container {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: 5px;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <h1>Summer Walker Artist Portal</h1>
+    <p>Loading your app...</p>
+    <div id="status">Initializing...</div>
+  </div>
+  
+  <!-- Error Container -->
+  <div id="error" class="error-container">
+    <h3>App Loading Error</h3>
+    <p id="error-message">Something went wrong while loading the app.</p>
+    <button onclick="location.reload()">Reload Page</button>
+  </div>
+
+  <script>
+    // Debug logging
+    console.log('Page loading started...');
+    console.log('Base href:', document.querySelector('base').href);
+    console.log('Current URL:', window.location.href);
+    
+    // Status updates
+    function updateStatus(message) {
+      document.getElementById('status').textContent = message;
+      console.log('Status:', message);
+    }
+    
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
+      console.error('Error:', message);
+    }
+    
+    // Check if Flutter files exist
+    function checkFlutterFiles() {
+      updateStatus('Checking Flutter files...');
+      
+      const requiredFiles = [
+        'flutter_bootstrap.js',
+        'main.dart.js',
+        'flutter.js'
+      ];
+      
+      let missingFiles = [];
+      
+      requiredFiles.forEach(file => {
+        const script = document.createElement('script');
+        script.src = file;
+        script.onerror = () => {
+          missingFiles.push(file);
+          console.error('Failed to load:', file);
+        };
+        script.onload = () => {
+          console.log('Successfully loaded:', file);
+        };
+        document.head.appendChild(script);
+      });
+      
+      setTimeout(() => {
+        if (missingFiles.length > 0) {
+          showError(`Missing Flutter files: ${missingFiles.join(', ')}. Check if the build completed successfully.`);
+        } else {
+          updateStatus('Flutter files loaded, initializing app...');
+        }
+      }, 2000);
+    }
+    
+    // Error handling
+    window.addEventListener('error', function(e) {
+      console.error('Global error:', e);
+      showError(`JavaScript error: ${e.message}`);
+    });
+    
+    // Page load handling
+    window.addEventListener('load', function() {
+      updateStatus('Page loaded, checking Flutter...');
+      checkFlutterFiles();
+      
+      // Timeout for Flutter initialization
+      setTimeout(() => {
+        if (!window.flutter_inappwebview && !document.querySelector('flutter-app')) {
+          updateStatus('Flutter not initialized, checking for issues...');
+          setTimeout(() => {
+            showError('Flutter app failed to initialize. Check console for errors.');
+          }, 10000); // Increased timeout to 10 seconds
+        }
+      }, 8000); // Increased initial timeout to 8 seconds
+    });
+    
+    // Check for Flutter bootstrap
+    if (typeof Flutter === 'undefined') {
+      updateStatus('Flutter not detected, loading bootstrap...');
+    }
+  </script>
+  
+  <script src="flutter_bootstrap.js" async onerror="showError('Failed to load Flutter bootstrap')"></script>
+</body>
+</html>
