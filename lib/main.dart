@@ -555,147 +555,60 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Live Stats Card
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppTheme.primaryColor.withOpacity(0.1),
-                          AppTheme.secondaryColor.withOpacity(0.1),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: AppTheme.primaryColor.withOpacity(0.1),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            _LiveStatItem(
-                              icon: Icons.people,
-                              value: '2.8M',
-                              label: 'Followers',
-                              color: AppTheme.primaryColor,
-                            ),
-                            _LiveStatItem(
-                              icon: Icons.favorite,
-                              value: '156K',
-                              label: 'Likes',
-                              color: Colors.red,
-                            ),
-                            _LiveStatItem(
-                              icon: Icons.play_circle,
-                              value: '89',
-                              label: 'Videos',
-                              color: AppTheme.secondaryColor,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(Icons.trending_up),
-                                label: const Text('View Analytics'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.primaryColor,
-                                  foregroundColor: Colors.white,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Hero Slider (static for now, DB-driven later)
+                  const _HeroSlider(),
                   const SizedBox(height: 24),
 
-                  // Quick Actions Grid
-                  Text(
-                    'Create & Connect',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppTheme.primaryTextColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  // Latest Videos
+                  const _SectionHeader(title: 'Latest Videos'),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 120,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (_, i) => const _MediaCard(
+                        aspectRatio: 16 / 9,
+                        placeholderIcon: Icons.play_circle_fill,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 16),
 
-                  GridView.count(
-                    crossAxisCount: 2,
+                  const SizedBox(height: 24),
+
+                  // Latest Music
+                  const _SectionHeader(title: 'Latest Music'),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 140,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (_, i) => const _MediaCard(
+                        aspectRatio: 1,
+                        placeholderIcon: Icons.music_note,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Shop Merch
+                  const _SectionHeader(title: 'Shop Merch'),
+                  const SizedBox(height: 12),
+                  GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1.1,
-                    children: [
-                      _ActionCard(
-                        icon: Icons.videocam,
-                        title: 'Go Live',
-                        subtitle: 'Stream to fans',
-                        gradient: [
-                          AppTheme.primaryColor,
-                          AppTheme.primaryColor.withOpacity(0.1)
-                        ],
-                        onTap: () {},
-                      ),
-                      _ActionCard(
-                        icon: Icons.camera_alt,
-                        title: 'New Post',
-                        subtitle: 'Share moments',
-                        gradient: [
-                          AppTheme.secondaryColor,
-                          AppTheme.secondaryColor.withOpacity(0.1)
-                        ],
-                        onTap: () {},
-                      ),
-                      _ActionCard(
-                        icon: Icons.music_note,
-                        title: 'Upload Track',
-                        subtitle: 'Share music',
-                        gradient: [
-                          Colors.purple,
-                          Colors.purple.withOpacity(0.1)
-                        ],
-                        onTap: () {},
-                      ),
-                      _ActionCard(
-                        icon: Icons.auto_stories,
-                        title: 'Story',
-                        subtitle: 'Quick update',
-                        gradient: [
-                          Colors.orange,
-                          Colors.orange.withOpacity(0.1)
-                        ],
-                        onTap: () {},
-                      ),
-                      _ActionCard(
-                        icon: Icons.star,
-                        title: 'Premium',
-                        subtitle: 'Exclusive content',
-                        gradient: [
-                          Colors.amber,
-                          Colors.orange.withOpacity(0.1)
-                        ],
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const PremiumContentPage(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                    itemCount: 4,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 3 / 3.6,
+                    ),
+                    itemBuilder: (_, i) => const _MerchCard(),
                   ),
                   const SizedBox(height: 24),
 
@@ -740,6 +653,114 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroSlider extends StatelessWidget {
+  const _HeroSlider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.primaryColor.withOpacity(0.1),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          'Hero Slider Placeholder',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: AppTheme.primaryTextColor,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: AppTheme.primaryTextColor,
+            fontWeight: FontWeight.bold,
+          ),
+    );
+  }
+}
+
+class _MediaCard extends StatelessWidget {
+  final double aspectRatio;
+  final IconData placeholderIcon;
+
+  const _MediaCard({required this.aspectRatio, required this.placeholderIcon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primaryColor.withOpacity(0.1),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(placeholderIcon, color: AppTheme.primaryTextColor, size: 40),
+          const SizedBox(height: 8),
+          Text(
+            'Media Placeholder',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MerchCard extends StatelessWidget {
+  const _MerchCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primaryColor.withOpacity(0.1),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.shopping_bag, color: AppTheme.primaryTextColor, size: 40),
+          const SizedBox(height: 8),
+          Text(
+            'Merch Placeholder',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppTheme.secondaryTextColor,
+                ),
           ),
         ],
       ),
