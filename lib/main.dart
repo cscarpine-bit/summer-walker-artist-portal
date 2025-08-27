@@ -5,7 +5,7 @@ import 'core/themes/app_theme.dart';
 import 'core/config/supabase_config.dart';
 import 'core/services/auth_service.dart';
 import 'features/auth/presentation/pages/login_page.dart';
-import 'features/content/presentation/pages/premium_content_page.dart';
+
 import 'features/admin/presentation/pages/admin_dashboard_page.dart';
 import 'core/services/profile_provider.dart';
 import 'features/profile/presentation/pages/profile_edit_page.dart';
@@ -138,7 +138,7 @@ class EmailVerificationScreen extends StatelessWidget {
                       color: AppTheme.primaryColor.withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.email_outlined,
                       size: 60,
                       color: AppTheme.primaryColor,
@@ -158,7 +158,7 @@ class EmailVerificationScreen extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  Text(
+                  const Text(
                     'We\'ve sent a verification link to:',
                     style: TextStyle(
                       fontSize: 16,
@@ -170,7 +170,7 @@ class EmailVerificationScreen extends StatelessWidget {
 
                   Text(
                     Supabase.instance.client.auth.currentUser?.email ?? '',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.primaryColor,
@@ -188,17 +188,17 @@ class EmailVerificationScreen extends StatelessWidget {
                         color: Colors.white.withOpacity(0.2),
                       ),
                     ),
-                    child: Column(
+                    child: const Column(
                       children: [
-                        const Text(
+                        Text(
                           '📧 Click the verification link in your email',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        const Text(
+                        SizedBox(height: 8),
+                        Text(
                           'After verification, you\'ll be automatically signed in',
                           style: TextStyle(
                             fontSize: 14,
@@ -411,34 +411,36 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: AppTheme.surfaceColor,
-        selectedItemColor: AppTheme.primaryColor,
-        unselectedItemColor: AppTheme.secondaryTextColor,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.live_tv),
-            label: 'Live',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view),
-            label: 'Posts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(child: _screens[_currentIndex]),
+        BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: AppTheme.surfaceColor,
+          selectedItemColor: AppTheme.primaryColor,
+          unselectedItemColor: AppTheme.secondaryTextColor,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.live_tv),
+              label: 'Live',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.grid_view),
+              label: 'Posts',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -450,376 +452,386 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
             colors: [
-              Color(0xFFE0F7FA), // Light teal/cyan
-              Color(0xFF4A148C), // Dark blue/purple
+              AppTheme.backgroundColor,
+              AppTheme.primaryColor.withOpacity(0.3),
+              AppTheme.backgroundColor,
             ],
           ),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Albums/Singles Section
-                const Text(
-                  'Albums & Singles',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                
-                // Horizontal album cards
-                SizedBox(
-                  height: 200,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      _AlbumCard(
-                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
-                        title: 'Heart Of A Woman (Quiet Storm)',
-                        artist: 'Summer Walker',
-                        overlayText: 'Heart Of A Woman',
-                      ),
-                      const SizedBox(width: 16),
-                      _AlbumCard(
-                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
-                        title: 'Heart Of A Woman - S',
-                        artist: 'Summer Walker',
-                        overlayText: 'Heart Of A Woman',
-                      ),
-                    ],
-                  ),
-                ),
-                
-                const SizedBox(height: 32),
-                
-                // Shop Merch Section
-                const Text(
-                  'Shop Merch',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                
-                // Merch grid
-                Row(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Hero Image Section - Full screen width, no padding, rounded bottom
+              SizedBox(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height *
+                    0.65, // Takes up most of the screen
+                child: Stack(
                   children: [
-                    Expanded(
-                      child: _MerchItem(
-                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
-                        title: 'CLEAR 2: SOFT LIFE EP',
-                        price: '\$5.99',
+                    // Hero Image - goes all the way to the top
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
+                        child: Image.asset(
+                          'assets/assets/images/herroimagesummerwaker.jpg',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _MerchItem(
-                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
-                        title: 'New Baby Tee - V',
-                        price: '\$35.00',
+                    // Settings Icon - top right corner
+                    Positioned(
+                      top: 50,
+                      right: 20,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.3),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.settings,
+                          color: AppTheme.primaryColor,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                    // Summer Walker Logo Overlay
+                    Positioned(
+                      bottom: 80,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Image.asset(
+                          'assets/assets/images/Summer Walker Logo.png',
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _HeroSlider extends StatelessWidget {
-  const _HeroSlider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 150,
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.1),
-        ),
-      ),
-      child: Center(
-        child: Text(
-          'Hero Slider Placeholder',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppTheme.primaryTextColor,
-                fontWeight: FontWeight.bold,
               ),
-        ),
-      ),
-    );
-  }
-}
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-
-  const _SectionHeader({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppTheme.primaryTextColor,
-            fontWeight: FontWeight.bold,
-          ),
-    );
-  }
-}
-
-class _MediaCard extends StatelessWidget {
-  final double aspectRatio;
-  final IconData placeholderIcon;
-
-  const _MediaCard({required this.aspectRatio, required this.placeholderIcon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 150,
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.1),
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(placeholderIcon, color: AppTheme.primaryTextColor, size: 40),
-          const SizedBox(height: 8),
-          Text(
-            'Media Placeholder',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppTheme.secondaryTextColor,
+              // Listen To My Album Button
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: Add album listening functionality
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black87,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Listen To My New Album',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MerchCard extends StatelessWidget {
-  const _MerchCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.1),
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.shopping_bag, color: AppTheme.primaryTextColor, size: 40),
-          const SizedBox(height: 8),
-          Text(
-            'Merch Placeholder',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppTheme.secondaryTextColor,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LiveStatItem extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color color;
-
-  const _LiveStatItem({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, color: color, size: 24),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppTheme.primaryTextColor,
-                fontWeight: FontWeight.bold,
               ),
-        ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.secondaryTextColor,
-              ),
-        ),
-      ],
-    );
-  }
-}
 
-class _ActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final List<Color> gradient;
-  final VoidCallback onTap;
-
-  const _ActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.gradient,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: gradient,
-          ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: gradient[0].withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: 36),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            Text(
-              subtitle,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.1),
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RecentActivityItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color color;
-
-  const _RecentActivityItem({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.1),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.primaryTextColor,
-                        fontWeight: FontWeight.w500,
+              // Happening Now Section
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Happening Now',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.secondaryTextColor,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Update Card
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
                       ),
+                      child: Row(
+                        children: [
+                          // Date
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text(
+                              '16 Feb',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.primaryColor,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(width: 16),
+
+                          // Update Text
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Update on New Album',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    const Text(
+                                      'Live',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Arrow Icon
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppTheme.primaryColor,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              // Upcoming Events Section
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Upcoming Events',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'No upcoming events',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Latest Videos Section
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Latest Videos',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'No videos available',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Latest Music Section
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Latest Music',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'No music available',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Merch Section
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Merch',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'No merch available',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24), // Bottom padding
+            ],
           ),
-          const Icon(
-            Icons.arrow_forward_ios,
-            color: AppTheme.secondaryTextColor,
-            size: 16,
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -831,169 +843,184 @@ class LiveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Go Live'),
-        backgroundColor: AppTheme.backgroundColor,
-        foregroundColor: AppTheme.primaryTextColor,
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.settings),
-            color: AppTheme.primaryTextColor,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              AppTheme.backgroundColor,
+              AppTheme.primaryColor.withOpacity(0.3),
+              AppTheme.backgroundColor,
+            ],
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Live Preview Container
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppTheme.surfaceColor,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
-                    width: 2,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.videocam_off,
-                      size: 80,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Camera Preview',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppTheme.primaryTextColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    Text(
-                      'Connect your camera to start streaming',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppTheme.secondaryTextColor,
-                          ),
-                    ),
-                  ],
-                ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: const Text('Go Live'),
+            backgroundColor: Colors.transparent,
+            foregroundColor: AppTheme.primaryTextColor,
+            centerTitle: true,
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.settings),
+                color: AppTheme.primaryTextColor,
               ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Live Stream Controls
-            Expanded(
-              flex: 2,
-              child: Column(
-                children: [
-                  // Stream Title Input
-                  TextField(
-                    style: const TextStyle(color: AppTheme.primaryTextColor),
-                    decoration: InputDecoration(
-                      hintText: 'Stream title...',
-                      hintStyle:
-                          const TextStyle(color: AppTheme.secondaryTextColor),
-                      prefixIcon:
-                          const Icon(Icons.title, color: AppTheme.primaryColor),
-                      filled: true,
-                      fillColor: AppTheme.surfaceColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                // Live Preview Container
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppTheme.surfaceColor,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        width: 2,
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Stream Settings Row
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppTheme.surfaceColor,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.people,
-                                  color: AppTheme.primaryColor),
-                              const SizedBox(width: 8),
-                              Text(
-                                '0 viewers',
-                                style: const TextStyle(
-                                    color: AppTheme.primaryTextColor),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.videocam_off,
+                          size: 80,
+                          color: AppTheme.secondaryTextColor,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Camera Preview',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: AppTheme.primaryTextColor,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
+                        ),
+                        Text(
+                          'Connect your camera to start streaming',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: AppTheme.secondaryTextColor,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Live Stream Controls
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      // Stream Title Input
+                      TextField(
+                        style: const TextStyle(color: AppTheme.primaryTextColor),
+                        decoration: InputDecoration(
+                          hintText: 'Stream title...',
+                          hintStyle:
+                              const TextStyle(color: AppTheme.secondaryTextColor),
+                          prefixIcon:
+                              const Icon(Icons.title, color: AppTheme.primaryColor),
+                          filled: true,
+                          fillColor: AppTheme.surfaceColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppTheme.surfaceColor,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.timer,
-                                  color: AppTheme.primaryColor),
-                              const SizedBox(width: 8),
-                              Text(
-                                '00:00',
-                                style: const TextStyle(
-                                    color: AppTheme.primaryTextColor),
+
+                      const SizedBox(height: 16),
+
+                      // Stream Settings Row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppTheme.surfaceColor,
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                            ],
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.people,
+                                      color: AppTheme.primaryColor),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    '0 viewers',
+                                    style: TextStyle(
+                                        color: AppTheme.primaryTextColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppTheme.surfaceColor,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.timer,
+                                      color: AppTheme.primaryColor),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    '00:00',
+                                    style: TextStyle(
+                                        color: AppTheme.primaryTextColor),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const Spacer(),
+
+                      // Go Live Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.videocam, size: 28),
+                          label: const Text(
+                            'GO LIVE',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-
-                  const Spacer(),
-
-                  // Go Live Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.videocam, size: 28),
-                      label: const Text(
-                        'GO LIVE',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -1006,20 +1033,35 @@ class PostsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('My Posts'),
-        backgroundColor: AppTheme.backgroundColor,
-        foregroundColor: AppTheme.primaryTextColor,
-      ),
-      body: const Center(
-        child: Text(
-          'Content Management\nComing Soon',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: AppTheme.primaryTextColor,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              AppTheme.backgroundColor,
+              AppTheme.primaryColor.withOpacity(0.3),
+              AppTheme.backgroundColor,
+            ],
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: const Text('My Posts'),
+            backgroundColor: Colors.transparent,
+            foregroundColor: AppTheme.primaryTextColor,
+          ),
+          body: const Center(
+            child: Text(
+              'Content Management\nComing Soon',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppTheme.primaryTextColor,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ),
@@ -1052,11 +1094,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final artistStats = profileProvider.artistStats;
 
         return Scaffold(
-          backgroundColor: AppTheme.backgroundColor,
-          appBar: AppBar(
-            title: const Text('Profile'),
-            backgroundColor: AppTheme.backgroundColor,
-            foregroundColor: AppTheme.primaryTextColor,
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  AppTheme.backgroundColor,
+                  AppTheme.primaryColor.withOpacity(0.3),
+                  AppTheme.backgroundColor,
+                ],
+              ),
+            ),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                title: const Text('Profile'),
+                backgroundColor: Colors.transparent,
+                foregroundColor: AppTheme.primaryTextColor,
             actions: [
               IconButton(
                 onPressed: () {
@@ -1109,9 +1164,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Container(
                                   width: 80,
                                   height: 80,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
-                                    gradient: const LinearGradient(
+                                    gradient: LinearGradient(
                                       colors: [
                                         AppTheme.primaryColor,
                                         AppTheme.secondaryColor
@@ -1329,7 +1384,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onTap: () {},
                           ),
 
-                          const Spacer(),
+                          const SizedBox(height: 24),
 
                           // Logout Button
                           SizedBox(
@@ -1364,6 +1419,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
+            ),
+          ),
         );
       },
     );
@@ -1484,151 +1541,6 @@ class _StatItem extends StatelessWidget {
               ),
         ),
       ],
-    );
-  }
-}
-
-class _AlbumCard extends StatelessWidget {
-  final String imagePath;
-  final String title;
-  final String artist;
-  final String overlayText;
-
-  const _AlbumCard({
-    required this.imagePath,
-    required this.title,
-    required this.artist,
-    required this.overlayText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.cover,
-              width: 200,
-              height: 200,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.6),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    overlayText,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    artist,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MerchItem extends StatelessWidget {
-  final String imagePath;
-  final String title;
-  final String price;
-
-  const _MerchItem({
-    required this.imagePath,
-    required this.title,
-    required this.price,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 150,
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: 150,
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.6),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    price,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
