@@ -12,11 +12,26 @@ import 'features/admin/presentation/pages/admin_dashboard_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Supabase
-  await Supabase.initialize(
-    url: SupabaseConfig.supabaseUrl,
-    anonKey: SupabaseConfig.supabaseAnonKey,
-  );
+  try {
+    // Initialize Supabase
+    await Supabase.initialize(
+      url: SupabaseConfig.supabaseUrl,
+      anonKey: SupabaseConfig.supabaseAnonKey,
+    );
+
+    // Check initial auth state
+    final client = Supabase.instance.client;
+    final user = client.auth.currentUser;
+
+    // Test the auth stream
+    client.auth.onAuthStateChange.listen((data) {
+      // Auth state change listener for navigation
+    });
+  } catch (e) {
+    print('❌ Failed to initialize Supabase: $e');
+    // Continue with app initialization even if Supabase fails
+    // This will allow the app to show an error state
+  }
 
   runApp(const SummerWalkerApp());
 }
@@ -48,15 +63,15 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AuthState>(
-      stream: context.read<AuthService>().authStateChanges,
+      stream: Supabase.instance.client.auth.onAuthStateChange,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SplashScreen();
         }
-        
+
         final authState = snapshot.data;
         final user = authState?.session?.user;
-        
+
         if (user != null) {
           // User is signed in
           if (user.emailConfirmedAt != null) {
@@ -67,7 +82,7 @@ class AuthWrapper extends StatelessWidget {
             return const EmailVerificationScreen();
           }
         }
-        
+
         // No user, show login
         return const LoginPage();
       },
@@ -115,9 +130,9 @@ class EmailVerificationScreen extends StatelessWidget {
                       color: AppTheme.primaryColor,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   const Text(
                     'Check Your Email',
                     style: TextStyle(
@@ -126,9 +141,9 @@ class EmailVerificationScreen extends StatelessWidget {
                       color: AppTheme.primaryTextColor,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   Text(
                     'We\'ve sent a verification link to:',
                     style: TextStyle(
@@ -136,20 +151,20 @@ class EmailVerificationScreen extends StatelessWidget {
                       color: AppTheme.secondaryTextColor,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   Text(
-                    context.read<AuthService>().currentUser?.email ?? '',
+                    Supabase.instance.client.auth.currentUser?.email ?? '',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.primaryColor,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -179,16 +194,22 @@ class EmailVerificationScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () async {
                           try {
-                            await context.read<AuthService>().resendVerificationEmail();
+                            await Supabase.instance.client.auth.resend(
+                              type: OtpType.signup,
+                              email: Supabase.instance.client.auth.currentUser
+                                      ?.email ??
+                                  '',
+                              emailRedirectTo: SupabaseConfig.redirectUrl,
+                            );
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -201,7 +222,8 @@ class EmailVerificationScreen extends StatelessWidget {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Failed to resend: ${e.toString()}'),
+                                  content:
+                                      Text('Failed to resend: ${e.toString()}'),
                                   backgroundColor: Colors.red,
                                 ),
                               );
@@ -213,20 +235,21 @@ class EmailVerificationScreen extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.secondaryColor,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                         ),
                       ),
-                      
                       ElevatedButton.icon(
                         onPressed: () async {
-                          await context.read<AuthService>().signOut();
+                          await Supabase.instance.client.auth.signOut();
                         },
                         icon: const Icon(Icons.logout),
                         label: const Text('Sign Out'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red.withOpacity(0.8),
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
                         ),
                       ),
                     ],

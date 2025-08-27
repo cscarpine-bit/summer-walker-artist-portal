@@ -26,7 +26,7 @@ class AuthService {
         },
         emailRedirectTo: SupabaseConfig.redirectUrl,
       );
-      
+
       // Create user profile in profiles table
       if (response.user != null) {
         try {
@@ -42,11 +42,12 @@ class AuthService {
           print('Profile creation failed: $e');
         }
       }
-      
+
       return response;
     } catch (e) {
       if (e.toString().contains('over_email_send_rate_limit')) {
-        throw Exception('Please wait a moment before trying again. Check your email for verification.');
+        throw Exception(
+            'Please wait a moment before trying again. Check your email for verification.');
       }
       throw Exception('Sign up failed: $e');
     }
@@ -58,13 +59,19 @@ class AuthService {
     required String password,
   }) async {
     try {
-      return await _supabase.auth.signInWithPassword(
+      final response = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
+
+      // Force a refresh of the auth state
+      await _supabase.auth.refreshSession();
+
+      return response;
     } catch (e) {
       if (e.toString().contains('Email not confirmed')) {
-        throw Exception('Please check your email and click the verification link before signing in.');
+        throw Exception(
+            'Please check your email and click the verification link before signing in.');
       }
       throw Exception('Sign in failed: $e');
     }
@@ -113,13 +120,13 @@ class AuthService {
   Future<Map<String, dynamic>?> getUserProfile() async {
     try {
       if (currentUser == null) return null;
-      
+
       final response = await _supabase
           .from('profiles')
           .select()
           .eq('id', currentUser!.id)
           .single();
-      
+
       return response;
     } catch (e) {
       throw Exception('Failed to get user profile: $e');
@@ -151,10 +158,13 @@ class AuthService {
       // This is a temporary workaround until Supabase settings are updated
       // In a real app, you'd handle this differently
       print('⚠️ WARNING: Email verification is redirecting to localhost:3000');
-      print('⚠️ Please update Supabase project settings to fix this permanently');
+      print(
+          '⚠️ Please update Supabase project settings to fix this permanently');
       print('⚠️ Go to: Authentication → URL Configuration');
-      print('⚠️ Set Site URL to: https://cscarpine-bit.github.io/summer-walker-artist-portal/');
-      print('⚠️ Add Redirect URL: https://cscarpine-bit.github.io/summer-walker-artist-portal/email_verification.html');
+      print(
+          '⚠️ Set Site URL to: https://cscarpine-bit.github.io/summer-walker-artist-portal/');
+      print(
+          '⚠️ Add Redirect URL: https://cscarpine-bit.github.io/summer-walker-artist-portal/email_verification.html');
     } catch (e) {
       print('Error in localhost redirect handler: $e');
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/themes/app_theme.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../main.dart';
@@ -16,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _fullNameController = TextEditingController();
-  
+
   bool _isLogin = true;
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -37,14 +38,14 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final authService = context.read<AuthService>();
-      
+
       if (_isLogin) {
         // Sign in
         await authService.signIn(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -57,13 +58,13 @@ class _LoginPageState extends State<LoginPage> {
         // Sign up
         final email = _emailController.text.trim();
         _lastSignupEmail = email;
-        
+
         await authService.signUp(
           email: email,
           password: _passwordController.text,
           fullName: _fullNameController.text.trim(),
         );
-        
+
         if (mounted) {
           // Show success message with email verification info
           _showEmailVerificationDialog(email);
@@ -72,16 +73,18 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       if (mounted) {
         String message = e.toString();
-        
+
         // Handle specific error cases
         if (message.contains('over_email_send_rate_limit')) {
-          message = 'Please wait a moment before trying again. Check your email for verification.';
+          message =
+              'Please wait a moment before trying again. Check your email for verification.';
         } else if (message.contains('Email not confirmed')) {
-          message = 'Please check your email and click the verification link before signing in.';
+          message =
+              'Please check your email and click the verification link before signing in.';
         } else if (message.contains('Invalid login credentials')) {
           message = 'Invalid email or password. Please try again.';
         }
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
@@ -202,9 +205,9 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 40),
-                    
+
                     // Form
                     Container(
                       padding: const EdgeInsets.all(24),
@@ -257,7 +260,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               const SizedBox(height: 16),
                             ],
-                            
+
                             // Email Field
                             TextFormField(
                               controller: _emailController,
@@ -296,9 +299,9 @@ class _LoginPageState extends State<LoginPage> {
                                 return null;
                               },
                             ),
-                            
+
                             const SizedBox(height: 16),
-                            
+
                             // Password Field
                             TextFormField(
                               controller: _passwordController,
@@ -349,9 +352,9 @@ class _LoginPageState extends State<LoginPage> {
                                 return null;
                               },
                             ),
-                            
+
                             const SizedBox(height: 24),
-                            
+
                             // Submit Button
                             ElevatedButton(
                               onPressed: _isLoading ? null : _submitForm,
@@ -383,9 +386,9 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                             ),
-                            
+
                             const SizedBox(height: 16),
-                            
+
                             // Toggle Mode Button
                             TextButton(
                               onPressed: _toggleMode,
@@ -398,7 +401,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            
+
                             if (_isLogin) ...[
                               const SizedBox(height: 8),
                               TextButton(
@@ -406,12 +409,43 @@ class _LoginPageState extends State<LoginPage> {
                                   // TODO: Implement password reset
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Password reset feature coming soon!'),
+                                      content: Text(
+                                          'Password reset feature coming soon!'),
                                     ),
                                   );
                                 },
                                 child: Text(
                                   'Forgot Password?',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.6),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextButton(
+                                onPressed: () {
+                                  // Test authentication state
+                                  final client = Supabase.instance.client;
+                                  final user = client.auth.currentUser;
+                                  final session = client.auth.currentSession;
+
+                                  print('🔍 Debug: Current auth state:');
+                                  print('   User: ${user?.email ?? 'null'}');
+                                  print(
+                                      '   Session: ${session != null ? 'Valid' : 'Invalid'}');
+                                  print(
+                                      '   Email confirmed: ${user?.emailConfirmedAt ?? 'null'}');
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'User: ${user?.email ?? 'null'}, Session: ${session != null ? 'Valid' : 'Invalid'}'),
+                                      backgroundColor: Colors.blue,
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Debug Auth State',
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.6),
                                   ),
