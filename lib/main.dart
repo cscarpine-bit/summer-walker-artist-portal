@@ -898,16 +898,18 @@ class LiveScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         Text(
                           'Camera Preview',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                color: AppTheme.primaryTextColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: AppTheme.primaryTextColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         Text(
                           'Connect your camera to start streaming',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppTheme.secondaryTextColor,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppTheme.secondaryTextColor,
+                                  ),
                         ),
                       ],
                     ),
@@ -923,13 +925,14 @@ class LiveScreen extends StatelessWidget {
                     children: [
                       // Stream Title Input
                       TextField(
-                        style: const TextStyle(color: AppTheme.primaryTextColor),
+                        style:
+                            const TextStyle(color: AppTheme.primaryTextColor),
                         decoration: InputDecoration(
                           hintText: 'Stream title...',
-                          hintStyle:
-                              const TextStyle(color: AppTheme.secondaryTextColor),
-                          prefixIcon:
-                              const Icon(Icons.title, color: AppTheme.primaryColor),
+                          hintStyle: const TextStyle(
+                              color: AppTheme.secondaryTextColor),
+                          prefixIcon: const Icon(Icons.title,
+                              color: AppTheme.primaryColor),
                           filled: true,
                           fillColor: AppTheme.surfaceColor,
                           border: OutlineInputBorder(
@@ -1018,7 +1021,7 @@ class LiveScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -1112,313 +1115,327 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('Profile'),
                 backgroundColor: Colors.transparent,
                 foregroundColor: AppTheme.primaryTextColor,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ProfileEditPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.edit),
-                color: AppTheme.primaryTextColor,
-              ),
-            ],
-          ),
-          body: profileProvider.isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppTheme.primaryColor,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileEditPage(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit),
+                    color: AppTheme.primaryTextColor,
                   ),
-                )
-              : profile == null
+                ],
+              ),
+              body: profileProvider.isLoading
                   ? const Center(
-                      child: Text(
-                        'Failed to load profile',
-                        style: TextStyle(color: AppTheme.primaryTextColor),
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryColor,
                       ),
                     )
-                  : SingleChildScrollView(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          // Profile Header
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppTheme.primaryColor.withOpacity(0.1),
-                                  AppTheme.secondaryColor.withOpacity(0.1),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: AppTheme.primaryColor.withOpacity(0.1),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                // Profile Picture
-                                Container(
-                                  width: 80,
-                                  height: 80,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        AppTheme.primaryColor,
-                                        AppTheme.secondaryColor
-                                      ],
-                                    ),
+                  : profile == null
+                      ? const Center(
+                          child: Text(
+                            'Failed to load profile',
+                            style: TextStyle(color: AppTheme.primaryTextColor),
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              // Profile Header
+                              Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppTheme.primaryColor.withOpacity(0.1),
+                                      AppTheme.secondaryColor.withOpacity(0.1),
+                                    ],
                                   ),
-                                  child: profile['avatar_url'] != null
-                                      ? ClipOval(
-                                          child: Image.network(
-                                            profile['avatar_url'],
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) =>
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color:
+                                        AppTheme.primaryColor.withOpacity(0.1),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    // Profile Picture
+                                    Container(
+                                      width: 80,
+                                      height: 80,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            AppTheme.primaryColor,
+                                            AppTheme.secondaryColor
+                                          ],
+                                        ),
+                                      ),
+                                      child: profile['avatar_url'] != null
+                                          ? ClipOval(
+                                              child: Image.network(
+                                                profile['avatar_url'],
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error,
+                                                        stackTrace) =>
                                                     const Icon(Icons.person,
                                                         color: Colors.white,
                                                         size: 40),
+                                              ),
+                                            )
+                                          : const Icon(Icons.person,
+                                              color: Colors.white, size: 40),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            profile['full_name'] ??
+                                                'Unknown User',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall
+                                                ?.copyWith(
+                                                  color:
+                                                      AppTheme.primaryTextColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
-                                        )
-                                      : const Icon(Icons.person,
-                                          color: Colors.white, size: 40),
+                                          if (profile['username'] != null) ...[
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              '@${profile['username']}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color:
+                                                        AppTheme.primaryColor,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
+                                          ],
+                                          if (profile['bio'] != null) ...[
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              profile['bio'],
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color: AppTheme
+                                                        .secondaryTextColor,
+                                                  ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 20),
-                                Expanded(
+                              ),
+
+                              const SizedBox(height: 24),
+
+                              // Artist Stats (if user is an artist)
+                              if (profile['is_artist'] == true &&
+                                  artistStats != null) ...[
+                                Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppTheme.primaryColor.withOpacity(0.1),
+                                        AppTheme.secondaryColor
+                                            .withOpacity(0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: AppTheme.primaryColor
+                                          .withOpacity(0.1),
+                                    ),
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        profile['full_name'] ?? 'Unknown User',
+                                        'Artist Statistics',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headlineSmall
+                                            .titleLarge
                                             ?.copyWith(
                                               color: AppTheme.primaryTextColor,
                                               fontWeight: FontWeight.bold,
                                             ),
                                       ),
-                                      if (profile['username'] != null) ...[
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          '@${profile['username']}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: AppTheme.primaryColor,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                        ),
-                                      ],
-                                      if (profile['bio'] != null) ...[
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          profile['bio'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color:
-                                                    AppTheme.secondaryTextColor,
-                                              ),
-                                        ),
-                                      ],
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          _StatItem(
+                                            icon: Icons.people,
+                                            value: profileProvider
+                                                .formattedFollowers,
+                                            label: 'Followers',
+                                            color: AppTheme.primaryColor,
+                                          ),
+                                          _StatItem(
+                                            icon: Icons.favorite,
+                                            value:
+                                                profileProvider.formattedLikes,
+                                            label: 'Likes',
+                                            color: Colors.red,
+                                          ),
+                                          _StatItem(
+                                            icon: Icons.play_circle,
+                                            value:
+                                                profileProvider.formattedViews,
+                                            label: 'Views',
+                                            color: AppTheme.secondaryColor,
+                                          ),
+                                          _StatItem(
+                                            icon: Icons.attach_money,
+                                            value: profileProvider
+                                                .formattedRevenue,
+                                            label: 'Revenue',
+                                            color: Colors.green,
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
+                                const SizedBox(height: 24),
                               ],
-                            ),
-                          ),
 
-                          const SizedBox(height: 24),
-
-                          // Artist Stats (if user is an artist)
-                          if (profile['is_artist'] == true &&
-                              artistStats != null) ...[
-                            Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppTheme.primaryColor.withOpacity(0.1),
-                                    AppTheme.secondaryColor.withOpacity(0.1),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: AppTheme.primaryColor.withOpacity(0.1),
-                                ),
+                              // Quick Actions
+                              Text(
+                                'Quick Actions',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                      color: AppTheme.primaryTextColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Artist Statistics',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge
-                                        ?.copyWith(
-                                          color: AppTheme.primaryTextColor,
-                                          fontWeight: FontWeight.bold,
+                              const SizedBox(height: 16),
+
+                              // Admin Dashboard Button (only for artists)
+                              if (profile['is_artist'] == true) ...[
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AdminDashboardPage(),
                                         ),
+                                      );
+                                    },
+                                    icon:
+                                        const Icon(Icons.admin_panel_settings),
+                                    label: const Text('Admin Dashboard'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppTheme.primaryColor,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(height: 20),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      _StatItem(
-                                        icon: Icons.people,
-                                        value:
-                                            profileProvider.formattedFollowers,
-                                        label: 'Followers',
-                                        color: AppTheme.primaryColor,
-                                      ),
-                                      _StatItem(
-                                        icon: Icons.favorite,
-                                        value: profileProvider.formattedLikes,
-                                        label: 'Likes',
-                                        color: Colors.red,
-                                      ),
-                                      _StatItem(
-                                        icon: Icons.play_circle,
-                                        value: profileProvider.formattedViews,
-                                        label: 'Views',
-                                        color: AppTheme.secondaryColor,
-                                      ),
-                                      _StatItem(
-                                        icon: Icons.attach_money,
-                                        value: profileProvider.formattedRevenue,
-                                        label: 'Revenue',
-                                        color: Colors.green,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                          ],
-
-                          // Quick Actions
-                          Text(
-                            'Quick Actions',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                  color: AppTheme.primaryTextColor,
-                                  fontWeight: FontWeight.bold,
                                 ),
-                          ),
-                          const SizedBox(height: 16),
+                                const SizedBox(height: 16),
+                              ],
 
-                          // Admin Dashboard Button (only for artists)
-                          if (profile['is_artist'] == true) ...[
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
+                              // Other Profile Options
+                              _ProfileOption(
+                                icon: Icons.edit,
+                                title: 'Edit Profile',
+                                subtitle: 'Update your personal information',
+                                onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const AdminDashboardPage(),
+                                          const ProfileEditPage(),
                                     ),
                                   );
                                 },
-                                icon: const Icon(Icons.admin_panel_settings),
-                                label: const Text('Admin Dashboard'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.primaryColor,
-                                  foregroundColor: Colors.white,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                              ),
+
+                              _ProfileOption(
+                                icon: Icons.notifications,
+                                title: 'Notifications',
+                                subtitle:
+                                    'Manage your notification preferences',
+                                onTap: () {},
+                              ),
+
+                              _ProfileOption(
+                                icon: Icons.security,
+                                title: 'Privacy & Security',
+                                subtitle: 'Control your privacy settings',
+                                onTap: () {},
+                              ),
+
+                              _ProfileOption(
+                                icon: Icons.help,
+                                title: 'Help & Support',
+                                subtitle: 'Get help and contact support',
+                                onTap: () {},
+                              ),
+
+                              const SizedBox(height: 24),
+
+                              // Logout Button
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: () async {
+                                    final authService =
+                                        context.read<AuthService>();
+                                    await authService.signOut();
+                                    profileProvider.clearProfile();
+                                    if (mounted) {
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LoginPage()),
+                                        (route) => false,
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(Icons.logout),
+                                  label: const Text('Logout'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.red,
+                                    side: const BorderSide(color: Colors.red),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                          ],
-
-                          // Other Profile Options
-                          _ProfileOption(
-                            icon: Icons.edit,
-                            title: 'Edit Profile',
-                            subtitle: 'Update your personal information',
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const ProfileEditPage(),
-                                ),
-                              );
-                            },
+                            ],
                           ),
-
-                          _ProfileOption(
-                            icon: Icons.notifications,
-                            title: 'Notifications',
-                            subtitle: 'Manage your notification preferences',
-                            onTap: () {},
-                          ),
-
-                          _ProfileOption(
-                            icon: Icons.security,
-                            title: 'Privacy & Security',
-                            subtitle: 'Control your privacy settings',
-                            onTap: () {},
-                          ),
-
-                          _ProfileOption(
-                            icon: Icons.help,
-                            title: 'Help & Support',
-                            subtitle: 'Get help and contact support',
-                            onTap: () {},
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          // Logout Button
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton.icon(
-                              onPressed: () async {
-                                final authService = context.read<AuthService>();
-                                await authService.signOut();
-                                profileProvider.clearProfile();
-                                if (mounted) {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginPage()),
-                                    (route) => false,
-                                  );
-                                }
-                              },
-                              icon: const Icon(Icons.logout),
-                              label: const Text('Logout'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.red,
-                                side: const BorderSide(color: Colors.red),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
             ),
           ),
         );
