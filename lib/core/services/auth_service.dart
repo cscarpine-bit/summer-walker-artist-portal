@@ -10,11 +10,15 @@ class AuthService {
   // Check if user is authenticated
   bool get isAuthenticated => currentUser != null;
 
+  // Check if current user is an artist
+  bool get isArtist => currentUser?.userMetadata?['is_artist'] == true;
+
   // Sign up with email and password
   Future<AuthResponse> signUp({
     required String email,
     required String password,
     required String fullName,
+    String? username,
   }) async {
     try {
       final response = await _supabase.auth.signUp(
@@ -22,6 +26,7 @@ class AuthService {
         password: password,
         data: {
           'full_name': fullName,
+          'username': username,
           'created_at': DateTime.now().toIso8601String(),
         },
         emailRedirectTo: SupabaseConfig.redirectUrl,
@@ -33,6 +38,7 @@ class AuthService {
           await _supabase.from('profiles').insert({
             'id': response.user!.id,
             'full_name': fullName,
+            'username': username,
             'email': email,
             'created_at': DateTime.now().toIso8601String(),
             'updated_at': DateTime.now().toIso8601String(),
@@ -101,14 +107,18 @@ class AuthService {
   // Update user profile
   Future<void> updateProfile({
     required String fullName,
+    String? username,
     String? bio,
     String? avatarUrl,
+    Map<String, String>? socialLinks,
   }) async {
     try {
       await _supabase.from('profiles').update({
         'full_name': fullName,
+        'username': username,
         'bio': bio,
         'avatar_url': avatarUrl,
+        'social_links': socialLinks,
         'updated_at': DateTime.now().toIso8601String(),
       }).eq('id', currentUser!.id);
     } catch (e) {
@@ -133,6 +143,68 @@ class AuthService {
     }
   }
 
+  // Get artist stats
+  Future<Map<String, dynamic>?> getArtistStats() async {
+    try {
+      if (currentUser == null || !isArtist) return null;
+
+      final response = await _supabase
+          .from('artist_stats')
+          .select()
+          .eq('artist_id', currentUser!.id)
+          .single();
+
+      return response;
+    } catch (e) {
+      throw Exception('Failed to get artist stats: $e');
+    }
+  }
+
+  // Update artist stats
+  Future<void> updateArtistStats({
+    int? totalFollowers,
+    int? totalLikes,
+    int? totalViews,
+    double? totalRevenue,
+  }) async {
+    try {
+      if (currentUser == null || !isArtist) {
+        throw Exception('User is not an artist');
+      }
+
+      final updates = <String, dynamic>{
+        'last_updated': DateTime.now().toIso8601String(),
+      };
+
+      if (totalFollowers != null) updates['total_followers'] = totalFollowers;
+      if (totalLikes != null) updates['total_likes'] = totalLikes;
+      if (totalViews != null) updates['total_views'] = totalViews;
+      if (totalRevenue != null) updates['total_revenue'] = totalRevenue;
+
+      await _supabase
+          .from('artist_stats')
+          .update(updates)
+          .eq('artist_id', currentUser!.id);
+    } catch (e) {
+      throw Exception('Failed to update artist stats: $e');
+    }
+  }
+
+  // Check if username is available
+  Future<bool> isUsernameAvailable(String username) async {
+    try {
+      final response = await _supabase
+          .from('profiles')
+          .select('username')
+          .eq('username', username)
+          .maybeSingle();
+
+      return response == null; // Username is available if no result found
+    } catch (e) {
+      throw Exception('Failed to check username availability: $e');
+    }
+  }
+
   // Check if user needs email verification
   bool get needsEmailVerification {
     final user = currentUser;
@@ -149,6 +221,24 @@ class AuthService {
       );
     } catch (e) {
       throw Exception('Failed to resend verification email: $e');
+    }
+  }
+
+  // Handle localhost redirect issue (temporary workaround)
+  Future<void> handleLocalhostRedirect() async {
+    try {
+      // This is a temporary workaround until Supabase settings are updated
+      // In a real app, you'd handle this differently
+      print('⚠️ WARNING: Email verification is redirecting to localhost:3000');
+      print(
+          '⚠️ Please update Supabase project settings to fix this permanently');
+      print('⚠️ Go to: Authentication → URL Configuration');
+      print(
+          '⚠️ Set Site URL to: https://cscarpine-bit.github.io/summer-walker-artist-portal/');
+      print(
+          '⚠️ Add Redirect URL: https://cscarpine-bit.github.io/summer-walker-artist-portal/email_verification.html');
+    } catch (e) {
+      print('Error in localhost redirect handler: $e');
     }
   }
 
