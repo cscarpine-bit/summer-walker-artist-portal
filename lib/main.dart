@@ -457,9 +457,9 @@ class HomeScreen extends StatelessWidget {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
-              AppTheme.backgroundColor,
-              AppTheme.primaryColor.withOpacity(0.3),
-              AppTheme.backgroundColor,
+              Color(0xFF5D7FA3),
+              Color(0xFF13B8B5),
+              Color(0xFF5D7FA3),
             ],
           ),
         ),
