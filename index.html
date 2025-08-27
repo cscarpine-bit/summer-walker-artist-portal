@@ -154,9 +154,9 @@
           updateStatus('Flutter not initialized, checking for issues...');
           setTimeout(() => {
             showError('Flutter app failed to initialize. Check console for errors.');
-          }, 3000);
+          }, 10000); // Increased timeout to 10 seconds
         }
-      }, 5000);
+      }, 8000); // Increased initial timeout to 8 seconds
     });
     
     // Check for Flutter bootstrap

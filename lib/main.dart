@@ -19,14 +19,7 @@ void main() async {
       anonKey: SupabaseConfig.supabaseAnonKey,
     );
 
-    // Check initial auth state
-    final client = Supabase.instance.client;
-    final user = client.auth.currentUser;
-
-    // Test the auth stream
-    client.auth.onAuthStateChange.listen((data) {
-      // Auth state change listener for navigation
-    });
+    print('✅ Supabase initialized successfully');
   } catch (e) {
     print('❌ Failed to initialize Supabase: $e');
     // Continue with app initialization even if Supabase fails
@@ -65,25 +58,42 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<AuthState>(
       stream: Supabase.instance.client.auth.onAuthStateChange,
       builder: (context, snapshot) {
+        // Handle connection state
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SplashScreen();
         }
 
+        // Handle errors
+        if (snapshot.hasError) {
+          print('❌ Auth stream error: ${snapshot.error}');
+          return const LoginPage(); // Fallback to login on error
+        }
+
         final authState = snapshot.data;
-        final user = authState?.session?.user;
+
+        // Handle null auth state
+        if (authState == null) {
+          print('⚠️ Auth state is null, showing login page');
+          return const LoginPage();
+        }
+
+        final user = authState.session?.user;
 
         if (user != null) {
           // User is signed in
           if (user.emailConfirmedAt != null) {
             // Email is confirmed, show main app
+            print('✅ User authenticated: ${user.email}');
             return const MainScreen();
           } else {
             // Email not confirmed, show verification message
+            print('⚠️ User email not confirmed: ${user.email}');
             return const EmailVerificationScreen();
           }
         }
 
         // No user, show login
+        print('ℹ️ No user authenticated, showing login page');
         return const LoginPage();
       },
     );

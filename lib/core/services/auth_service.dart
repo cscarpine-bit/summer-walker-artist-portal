@@ -152,24 +152,6 @@ class AuthService {
     }
   }
 
-  // Handle localhost redirect issue (temporary workaround)
-  Future<void> handleLocalhostRedirect() async {
-    try {
-      // This is a temporary workaround until Supabase settings are updated
-      // In a real app, you'd handle this differently
-      print('⚠️ WARNING: Email verification is redirecting to localhost:3000');
-      print(
-          '⚠️ Please update Supabase project settings to fix this permanently');
-      print('⚠️ Go to: Authentication → URL Configuration');
-      print(
-          '⚠️ Set Site URL to: https://cscarpine-bit.github.io/summer-walker-artist-portal/');
-      print(
-          '⚠️ Add Redirect URL: https://cscarpine-bit.github.io/summer-walker-artist-portal/email_verification.html');
-    } catch (e) {
-      print('Error in localhost redirect handler: $e');
-    }
-  }
-
   // Listen to auth state changes
   Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
 }
