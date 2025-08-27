@@ -449,212 +449,94 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      body: CustomScrollView(
-        slivers: [
-          // Custom App Bar
-          SliverAppBar(
-            expandedHeight: 120,
-            backgroundColor: AppTheme.backgroundColor,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppTheme.primaryColor.withOpacity(0.1),
-                      AppTheme.backgroundColor,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFE0F7FA), // Light teal/cyan
+              Color(0xFF4A148C), // Dark blue/purple
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Albums/Singles Section
+                const Text(
+                  'Albums & Singles',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                
+                // Horizontal album cards
+                SizedBox(
+                  height: 200,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _AlbumCard(
+                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
+                        title: 'Heart Of A Woman (Quiet Storm)',
+                        artist: 'Summer Walker',
+                        overlayText: 'Heart Of A Woman',
+                      ),
+                      const SizedBox(width: 16),
+                      _AlbumCard(
+                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
+                        title: 'Heart Of A Woman - S',
+                        artist: 'Summer Walker',
+                        overlayText: 'Heart Of A Woman',
+                      ),
                     ],
                   ),
                 ),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        // Profile Picture
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              colors: [
-                                AppTheme.primaryColor,
-                                AppTheme.secondaryColor
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primaryColor.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(Icons.person,
-                              color: Colors.white, size: 30),
-                        ),
-                        const SizedBox(width: 16),
-
-                        // Welcome Text
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Hey, Summer! 👋',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(
-                                      color: AppTheme.primaryTextColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              Text(
-                                'Ready to create amazing content?',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: AppTheme.secondaryTextColor,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Notification Bell
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppTheme.surfaceColor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.notifications_outlined),
-                            color: AppTheme.primaryTextColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                
+                const SizedBox(height: 32),
+                
+                // Shop Merch Section
+                const Text(
+                  'Shop Merch',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-              ),
-            ),
-          ),
-
-          // Main Content
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Hero Slider (static for now, DB-driven later)
-                  const _HeroSlider(),
-                  const SizedBox(height: 24),
-
-                  // Latest Videos
-                  const _SectionHeader(title: 'Latest Videos'),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 120,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 4,
-                      separatorBuilder: (_, __) => const SizedBox(width: 12),
-                      itemBuilder: (_, i) => const _MediaCard(
-                        aspectRatio: 16 / 9,
-                        placeholderIcon: Icons.play_circle_fill,
+                const SizedBox(height: 16),
+                
+                // Merch grid
+                Row(
+                  children: [
+                    Expanded(
+                      child: _MerchItem(
+                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
+                        title: 'CLEAR 2: SOFT LIFE EP',
+                        price: '\$5.99',
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Latest Music
-                  const _SectionHeader(title: 'Latest Music'),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 140,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 4,
-                      separatorBuilder: (_, __) => const SizedBox(width: 12),
-                      itemBuilder: (_, i) => const _MediaCard(
-                        aspectRatio: 1,
-                        placeholderIcon: Icons.music_note,
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _MerchItem(
+                        imagePath: 'assets/images/herroimagesummerwaker.jpg',
+                        title: 'New Baby Tee - V',
+                        price: '\$35.00',
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Shop Merch
-                  const _SectionHeader(title: 'Shop Merch'),
-                  const SizedBox(height: 12),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 4,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: 3 / 3.6,
-                    ),
-                    itemBuilder: (_, i) => const _MerchCard(),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Recent Activity
-                  Text(
-                    'Recent Activity',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppTheme.primaryTextColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  ...List.generate(
-                      4,
-                      (index) => _RecentActivityItem(
-                            icon: const [
-                              Icons.favorite,
-                              Icons.person_add,
-                              Icons.comment,
-                              Icons.share
-                            ][index],
-                            title: const [
-                              'Your latest post got 1.2K likes',
-                              '156 new followers today',
-                              'New comments on your live stream',
-                              'Your music was shared 89 times'
-                            ][index],
-                            subtitle: const [
-                              '2 hours ago',
-                              '4 hours ago',
-                              '6 hours ago',
-                              '1 day ago'
-                            ][index],
-                            color: const [
-                              Colors.red,
-                              AppTheme.primaryColor,
-                              Colors.blue,
-                              Colors.green
-                            ][index],
-                          )),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -1602,6 +1484,151 @@ class _StatItem extends StatelessWidget {
               ),
         ),
       ],
+    );
+  }
+}
+
+class _AlbumCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String artist;
+  final String overlayText;
+
+  const _AlbumCard({
+    required this.imagePath,
+    required this.title,
+    required this.artist,
+    required this.overlayText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              width: 200,
+              height: 200,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    overlayText,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    artist,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MerchItem extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String price;
+
+  const _MerchItem({
+    required this.imagePath,
+    required this.title,
+    required this.price,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: 150,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    price,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
